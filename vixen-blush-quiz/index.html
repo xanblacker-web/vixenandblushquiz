@@ -1,0 +1,1519 @@
+<!--
+  ═══════════════════════════════════════════════════════════════
+  VIXEN & BLUSH — HAIR EXTENSION QUIZ
+  Image Guide (from Figma file: JEtbcSrQdWE4A4kIPxViQf)
+  ═══════════════════════════════════════════════════════════════
+
+  Export these images from Figma and save to /images/ folder.
+  Then replace the placeholder divs (search "IMG:" below).
+
+  HERO (welcome screen):
+    → Node 903:363 — Full-body smiling model, garden backdrop (1080×1350)
+      Export as: images/hero.jpg (800px wide)
+
+  Q1 CARDS (hair goals):
+    → Node 902:111 — Model smiling, full length, garden (for "Add Length")
+      Export as: images/q1-length.jpg (400px wide)
+    → Node 628:377 — FeatherLight after, volume result (for "Add Volume")
+      Export as: images/q1-volume.jpg (400px wide)
+    → Node 893:27 — Model after, long flowing hair (for "Both Length & Volume")
+      Export as: images/q1-both.jpg (400px wide)
+    → Node 628:375 — FeatherLight before, thinner hair (for "Cover Thinning")
+      Export as: images/q1-thinning.jpg (400px wide)
+
+  Q2 CARDS (hair type):
+    → Use same model shots cropped to show hair texture
+    → Node 893:47 — Front view, shorter/thinner hair (for "Fine or Thin")
+    → Node 893:61 — Salon shot, medium hair (for "Medium Thickness")
+    → Node 893:23 — Back view, thick long hair (for "Thick & Full")
+    → Node 628:375 — Before shot, thinning (for "Thinning or Hair Loss")
+
+  RESULTS:
+    → Node 903:363 — Hero model (primary result image)
+      Export as: images/result-primary.jpg (600px wide)
+    → Node 903:370 — Selfie/reaction polaroid shot
+      Export as: images/result-secondary.jpg (200px wide)
+
+  To add an image, replace the placeholder div's background:
+    background-image: url('images/your-image.jpg');
+    background-size: cover;
+    background-position: center;
+  Then hide the SVG icon and label span inside.
+
+  ═══════════════════════════════════════════════════════════════
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Find Your Perfect Method — Vixen & Blush</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --charcoal: #202020;
+  --gray: #626262;
+  --light-gray: #ededed;
+  --white: #ffffff;
+  --gold: #ffc821;
+  --gold-soft: #ffd966;
+  --gold-dark: #e6b41e;
+  --cream: #faf8f5;
+  --warm-gray: #f5f3f0;
+  --font-heading: 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'Montserrat', 'Helvetica Neue', sans-serif;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+html { font-size: 16px; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+body {
+  font-family: var(--font-body);
+  color: var(--charcoal);
+  background: var(--white);
+  overflow-x: hidden;
+  min-height: 100dvh;
+}
+
+/* ═══════════════════════════════════════
+   PROGRESS BAR
+   ═══════════════════════════════════════ */
+.progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: var(--light-gray);
+  z-index: 100;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+.progress-bar.visible { opacity: 1; }
+.progress-bar__fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold-dark), var(--gold), var(--gold-soft));
+  width: 0%;
+  transition: width 0.8s var(--ease-out-expo);
+  box-shadow: 0 0 12px rgba(255, 200, 33, 0.4);
+}
+
+/* ═══════════════════════════════════════
+   QUIZ CONTAINER
+   ═══════════════════════════════════════ */
+.quiz-wrapper {
+  position: relative;
+  width: 100%;
+  min-height: 100dvh;
+}
+
+.screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-height: 100dvh;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s ease, transform 0.6s var(--ease-out-expo);
+  transform: translateY(20px);
+}
+.screen.active {
+  opacity: 1;
+  pointer-events: all;
+  transform: translateY(0);
+  position: relative;
+}
+.screen.exiting {
+  opacity: 0;
+  transform: translateY(-20px);
+}
+
+/* ═══════════════════════════════════════
+   WELCOME SCREEN
+   ═══════════════════════════════════════ */
+.welcome {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
+.welcome__hero {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+
+/* === IMAGE PLACEHOLDER: Hero (replace background-image or drop an <img> inside) === */
+.welcome__hero-image {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #e8e0d8 0%, #d4c8bc 30%, #c9bdb0 60%, #b8a898 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  /* To add a real image:
+     background-image: url('your-hero-image.jpg');
+     background-size: cover;
+     background-position: center;
+  */
+}
+.welcome__hero-image svg { opacity: 0.3; }
+.welcome__hero-image span {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gray);
+  opacity: 0.5;
+}
+
+.welcome__hero-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 2rem 1.5rem;
+  background: linear-gradient(to top, rgba(32,32,32,0.85) 0%, rgba(32,32,32,0.4) 60%, transparent 100%);
+}
+
+.welcome__logo {
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.5rem;
+  font-weight: 400;
+}
+
+.welcome__content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 2.5rem 1.5rem 3rem;
+  text-align: center;
+}
+
+.welcome__headline {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 7vw, 3.2rem);
+  font-weight: 300;
+  line-height: 1.15;
+  color: var(--charcoal);
+  margin-bottom: 1.25rem;
+  letter-spacing: -0.01em;
+}
+.welcome__headline em {
+  font-style: italic;
+  color: var(--charcoal);
+}
+
+.welcome__subline {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 300;
+  line-height: 1.7;
+  color: var(--gray);
+  max-width: 400px;
+  margin: 0 auto 2.5rem;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 1rem 2.5rem;
+  background: var(--gold);
+  color: var(--charcoal);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+}
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+}
+.btn-primary:hover::before { transform: translateX(100%); }
+.btn-primary:hover {
+  background: var(--gold-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 30px rgba(255, 200, 33, 0.3);
+}
+.btn-primary:active { transform: translateY(0); }
+
+.btn-primary svg {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.3s ease;
+}
+.btn-primary:hover svg { transform: translateX(3px); }
+
+.welcome__trust {
+  margin-top: 2rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gray);
+  opacity: 0.6;
+}
+
+/* ═══════════════════════════════════════
+   QUESTION SCREENS
+   ═══════════════════════════════════════ */
+.question {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  padding: 3.5rem 1.5rem 2rem;
+}
+
+.question__nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+}
+
+.btn-back {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gray);
+  padding: 0.5rem 0;
+  transition: color 0.3s ease;
+}
+.btn-back:hover { color: var(--charcoal); }
+.btn-back svg {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.3s ease;
+}
+.btn-back:hover svg { transform: translateX(-3px); }
+
+.question__step {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold-dark);
+}
+
+.question__title {
+  font-family: var(--font-heading);
+  font-size: clamp(1.6rem, 5.5vw, 2.4rem);
+  font-weight: 300;
+  line-height: 1.2;
+  color: var(--charcoal);
+  margin-bottom: 2rem;
+  max-width: 500px;
+}
+
+.options-grid {
+  display: grid;
+  gap: 1rem;
+  flex: 1;
+}
+.options-grid--2col {
+  grid-template-columns: 1fr 1fr;
+}
+.options-grid--1col {
+  grid-template-columns: 1fr;
+}
+
+.option-card {
+  position: relative;
+  background: var(--white);
+  border: 1.5px solid var(--light-gray);
+  cursor: pointer;
+  transition: all 0.4s var(--ease-out-quart);
+  overflow: hidden;
+}
+.option-card:hover {
+  border-color: var(--gold);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+}
+.option-card.selected {
+  border-color: var(--gold);
+  background: linear-gradient(135deg, #fffdf5, #fff9e6);
+  box-shadow: 0 4px 20px rgba(255, 200, 33, 0.15);
+}
+
+/* === IMAGE PLACEHOLDER: Option Cards (replace background or add <img>) === */
+.option-card__image {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  background: linear-gradient(145deg, #f0ebe5, #e5ddd5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-bottom: 1px solid var(--light-gray);
+  background-size: cover;
+  background-position: center top;
+}
+.option-card__image svg { opacity: 0.2; width: 28px; height: 28px; }
+.option-card__image span {
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gray);
+  opacity: 0.4;
+}
+
+.option-card__body {
+  padding: 1rem 1rem 1.2rem;
+}
+
+.option-card__label {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: var(--charcoal);
+  line-height: 1.3;
+}
+
+.option-card__desc {
+  font-size: 0.75rem;
+  color: var(--gray);
+  margin-top: 0.3rem;
+  line-height: 1.5;
+  font-weight: 300;
+}
+
+/* Icon-only option cards (Q2 hair type) */
+.option-card__icon {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  background: var(--charcoal);
+  border-bottom: 1px solid var(--light-gray);
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+.option-card__icon::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 40%, rgba(255,200,33,0.08) 0%, transparent 70%);
+}
+.option-card__icon-lines {
+  display: flex;
+  gap: 4px;
+  align-items: flex-end;
+  height: 50px;
+}
+.option-card__icon-line {
+  width: 3px;
+  border-radius: 2px;
+  background: var(--gold);
+  transition: height 0.4s var(--ease-out-expo), opacity 0.3s ease;
+}
+.option-card:hover .option-card__icon-line {
+  opacity: 1;
+}
+.option-card__icon-label {
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 400;
+  position: relative;
+}
+.option-card.selected .option-card__icon {
+  background: var(--charcoal);
+}
+.option-card.selected .option-card__icon-line {
+  background: var(--gold-soft);
+}
+
+/* Text-only option cards (no image) */
+.option-card--text {
+  padding: 1.25rem 1.2rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.option-card__check {
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
+  border: 1.5px solid var(--light-gray);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  margin-top: 1px;
+}
+.option-card.selected .option-card__check {
+  border-color: var(--gold);
+  background: var(--gold);
+}
+.option-card__check svg {
+  width: 12px;
+  height: 12px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  color: var(--charcoal);
+}
+.option-card.selected .option-card__check svg { opacity: 1; }
+
+.option-card--text .option-card__label {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+/* ═══════════════════════════════════════
+   RESULTS SCREEN
+   ═══════════════════════════════════════ */
+.results {
+  min-height: 100dvh;
+  padding-bottom: 3rem;
+}
+
+.results__header {
+  text-align: center;
+  padding: 3.5rem 1.5rem 1.5rem;
+}
+
+.results__eyebrow {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold-dark);
+  margin-bottom: 0.75rem;
+}
+
+.results__headline {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 7vw, 3rem);
+  font-weight: 300;
+  line-height: 1.15;
+  color: var(--charcoal);
+}
+
+/* === IMAGE PLACEHOLDER: Result Method (replace background or add <img>) === */
+.results__hero-image {
+  width: calc(100% - 3rem);
+  margin: 1.5rem auto 0;
+  aspect-ratio: 2 / 3;
+  background: linear-gradient(160deg, #e8e0d8 0%, #d4c8bc 40%, #c9bdb0 70%, #bfb0a0 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center 20%;
+}
+.results__hero-image svg { opacity: 0.25; }
+.results__hero-image span {
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gray);
+  opacity: 0.45;
+}
+
+.results__body {
+  padding: 2rem 1.5rem;
+}
+
+.results__method-name {
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  font-weight: 400;
+  color: var(--charcoal);
+  margin-bottom: 0.75rem;
+}
+
+.results__method-desc {
+  font-size: 0.88rem;
+  font-weight: 300;
+  line-height: 1.75;
+  color: var(--gray);
+  margin-bottom: 1.5rem;
+  max-width: 500px;
+}
+
+.results__benefits {
+  list-style: none;
+  margin-bottom: 1.5rem;
+}
+.results__benefits li {
+  position: relative;
+  padding: 0.6rem 0 0.6rem 1.8rem;
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: var(--charcoal);
+  line-height: 1.5;
+}
+.results__benefits li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 8px;
+  background: var(--gold);
+  border-radius: 50%;
+}
+
+.results__price {
+  display: inline-block;
+  padding: 0.6rem 1.2rem;
+  background: var(--warm-gray);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--charcoal);
+  letter-spacing: 0.05em;
+  margin-bottom: 2.5rem;
+}
+
+/* Secondary recommendation */
+.results__also {
+  margin: 0 1.5rem 2.5rem;
+  padding: 1.25rem;
+  border: 1px solid var(--light-gray);
+  background: var(--cream);
+}
+
+.results__also-label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold-dark);
+  margin-bottom: 0.6rem;
+}
+
+.results__also-content {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+/* === IMAGE PLACEHOLDER: Secondary Method (replace background) === */
+.results__also-image {
+  width: 80px;
+  height: 80px;
+  min-width: 80px;
+  background: linear-gradient(135deg, #e8e0d8, #d4c8bc);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* To add image: background-image: url(...); background-size: cover; */
+}
+.results__also-image svg { opacity: 0.2; width: 24px; height: 24px; }
+
+.results__also-name {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--charcoal);
+  margin-bottom: 0.25rem;
+}
+
+.results__also-desc {
+  font-size: 0.75rem;
+  font-weight: 300;
+  color: var(--gray);
+  line-height: 1.5;
+}
+
+/* CTA section */
+.results__cta {
+  text-align: center;
+  padding: 0 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.results__cta .btn-primary {
+  width: 100%;
+  max-width: 400px;
+  padding: 1.15rem 2rem;
+  font-size: 0.78rem;
+}
+
+.results__cta-sub {
+  margin-top: 1rem;
+  font-size: 0.8rem;
+  font-weight: 300;
+  color: var(--gray);
+  line-height: 1.6;
+  font-style: italic;
+  font-family: var(--font-heading);
+}
+
+.results__trust {
+  text-align: center;
+  padding: 2rem 1.5rem 0;
+  border-top: 1px solid var(--light-gray);
+  margin: 2rem 1.5rem 0;
+}
+.results__trust span {
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gray);
+  line-height: 2;
+}
+
+/* Retake */
+.results__retake {
+  text-align: center;
+  margin-top: 1.5rem;
+}
+.btn-retake {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gray);
+  padding: 0.5rem 1rem;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  transition: color 0.3s ease;
+}
+.btn-retake:hover { color: var(--charcoal); }
+
+/* ═══════════════════════════════════════
+   LOADING / ANALYZING STATE
+   ═══════════════════════════════════════ */
+.analyzing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100dvh;
+  text-align: center;
+  padding: 2rem;
+}
+
+.analyzing__spinner {
+  width: 48px;
+  height: 48px;
+  border: 2px solid var(--light-gray);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 2rem;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.analyzing__text {
+  font-family: var(--font-heading);
+  font-size: 1.4rem;
+  font-weight: 300;
+  color: var(--charcoal);
+  margin-bottom: 0.5rem;
+}
+.analyzing__sub {
+  font-size: 0.8rem;
+  font-weight: 300;
+  color: var(--gray);
+}
+
+/* ═══════════════════════════════════════
+   ANIMATIONS
+   ═══════════════════════════════════════ */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-in { animation: fadeInUp 0.7s var(--ease-out-expo) both; }
+.animate-in-delay-1 { animation-delay: 0.1s; }
+.animate-in-delay-2 { animation-delay: 0.2s; }
+.animate-in-delay-3 { animation-delay: 0.3s; }
+.animate-in-delay-4 { animation-delay: 0.4s; }
+.animate-in-delay-5 { animation-delay: 0.5s; }
+
+.option-card {
+  animation: fadeInUp 0.5s var(--ease-out-expo) both;
+}
+.option-card:nth-child(1) { animation-delay: 0.05s; }
+.option-card:nth-child(2) { animation-delay: 0.1s; }
+.option-card:nth-child(3) { animation-delay: 0.15s; }
+.option-card:nth-child(4) { animation-delay: 0.2s; }
+
+/* ═══════════════════════════════════════
+   DESKTOP ENHANCEMENTS
+   ═══════════════════════════════════════ */
+@media (min-width: 640px) {
+  .welcome__content { padding: 3rem 2rem 4rem; }
+  .welcome__hero { aspect-ratio: 21 / 9; }
+  .question { padding: 4rem 2.5rem 2rem; max-width: 680px; margin: 0 auto; }
+  .results__body { max-width: 600px; margin: 0 auto; padding: 2.5rem 2rem; }
+  .results__header { padding-top: 4rem; }
+  .results__hero-image { max-width: 600px; margin-left: auto; margin-right: auto; }
+  .results__also { max-width: 600px; margin-left: auto; margin-right: auto; }
+  .results__cta { max-width: 600px; margin-left: auto; margin-right: auto; }
+  .results__trust { max-width: 600px; margin-left: auto; margin-right: auto; }
+}
+
+@media (min-width: 900px) {
+  .welcome { flex-direction: row; }
+  .welcome__hero { aspect-ratio: auto; width: 50%; min-height: 100dvh; }
+  .welcome__hero-image { min-height: 100%; }
+  .welcome__hero-overlay { display: none; }
+  .welcome__content {
+    width: 50%;
+    padding: 4rem 4rem;
+    justify-content: center;
+  }
+  .welcome__logo-desktop {
+    display: block;
+    font-family: var(--font-heading);
+    font-size: 0.85rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold-dark);
+    margin-bottom: 1.5rem;
+    font-weight: 400;
+  }
+  .options-grid--2col { grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+  .question { max-width: 740px; }
+}
+
+/* Hide desktop-only logo on mobile */
+.welcome__logo-desktop { display: none; }
+@media (min-width: 900px) { .welcome__logo-desktop { display: block; } }
+</style>
+</head>
+<body>
+
+<!-- Progress Bar -->
+<div class="progress-bar" id="progressBar">
+  <div class="progress-bar__fill" id="progressFill"></div>
+</div>
+
+<div class="quiz-wrapper" id="quizWrapper">
+
+  <!-- ═══════════════════════════════════
+       SCREEN 0: WELCOME
+       ═══════════════════════════════════ -->
+  <div class="screen active" id="screen-welcome">
+    <div class="welcome">
+      <div class="welcome__hero">
+        <!-- IMAGE PLACEHOLDER: Replace with hero image -->
+        <div class="welcome__hero-image" data-img="hero">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+          <span>Hero image · 16:9</span>
+        </div>
+        <div class="welcome__hero-overlay">
+          <div class="welcome__logo">Vixen & Blush</div>
+        </div>
+      </div>
+      <div class="welcome__content">
+        <div class="welcome__logo-desktop">Vixen & Blush</div>
+        <h1 class="welcome__headline animate-in">Discover Your <em>Perfect</em> Hair Extension Method</h1>
+        <p class="welcome__subline animate-in animate-in-delay-1">Answer a few quick questions and we'll match you with the ideal method for your hair, lifestyle and goals.</p>
+        <div class="animate-in animate-in-delay-2">
+          <button class="btn-primary" onclick="startQuiz()">
+            Take The Quiz
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+        <p class="welcome__trust animate-in animate-in-delay-3">Takes less than 60 seconds</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════
+       SCREEN 1: Q1 — Hair Goal
+       ═══════════════════════════════════ -->
+  <div class="screen" id="screen-q1">
+    <div class="question">
+      <div class="question__nav">
+        <button class="btn-back" onclick="goBack(1)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Back
+        </button>
+        <span class="question__step">Question 1 of 5</span>
+      </div>
+      <h2 class="question__title">What's your main hair goal?</h2>
+      <div class="options-grid options-grid--2col">
+
+        <div class="option-card" onclick="selectAnswer(1, 0, this)">
+          <div class="option-card__image" data-img="q1_length">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+            <span>Add image</span>
+          </div>
+          <div class="option-card__body">
+            <div class="option-card__label">Add Length</div>
+            <div class="option-card__desc">Go longer than your natural hair allows</div>
+          </div>
+        </div>
+
+        <div class="option-card" onclick="selectAnswer(1, 1, this)">
+          <div class="option-card__image" data-img="q1_volume">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+            <span>Add image</span>
+          </div>
+          <div class="option-card__body">
+            <div class="option-card__label">Add Volume & Fullness</div>
+            <div class="option-card__desc">Boost body and thickness throughout</div>
+          </div>
+        </div>
+
+        <div class="option-card" onclick="selectAnswer(1, 2, this)">
+          <div class="option-card__image" data-img="q1_both">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+            <span>Add image</span>
+          </div>
+          <div class="option-card__body">
+            <div class="option-card__label">Both Length & Volume</div>
+            <div class="option-card__desc">The full transformation</div>
+          </div>
+        </div>
+
+        <div class="option-card" onclick="selectAnswer(1, 3, this)">
+          <div class="option-card__image" data-img="q1_thinning">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+            <span>Add image</span>
+          </div>
+          <div class="option-card__body">
+            <div class="option-card__label">Cover Thinning Areas</div>
+            <div class="option-card__desc">Discreet coverage where you need it</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════
+       SCREEN 2: Q2 — Hair Type
+       ═══════════════════════════════════ -->
+  <div class="screen" id="screen-q2">
+    <div class="question">
+      <div class="question__nav">
+        <button class="btn-back" onclick="goBack(2)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Back
+        </button>
+        <span class="question__step">Question 2 of 5</span>
+      </div>
+      <h2 class="question__title">How would you describe your natural hair?</h2>
+      <div class="options-grid options-grid--2col">
+
+        <div class="option-card" onclick="selectAnswer(2, 0, this)">
+          <div class="option-card__icon">
+            <div class="option-card__icon-lines">
+              <div class="option-card__icon-line" style="height:30px; opacity:0.5"></div>
+              <div class="option-card__icon-line" style="height:38px; opacity:0.35"></div>
+            </div>
+            <span class="option-card__icon-label">Fine</span>
+          </div>
+          <div class="option-card__body">
+            <div class="option-card__label">Fine or Thin</div>
+            <div class="option-card__desc">Lightweight, delicate strands</div>
+          </div>
+        </div>
+
+        <div class="option-card" onclick="selectAnswer(2, 1, this)">
+          <div class="option-card__icon">
+            <div class="option-card__icon-lines">
+              <div class="option-card__icon-line" style="height:28px; opacity:0.7"></div>
+              <div class="option-card__icon-line" style="height:40px; opacity:0.85"></div>
+              <div class="option-card__icon-line" style="height:35px; opacity:0.7"></div>
+            </div>
+            <span class="option-card__icon-label">Medium</span>
+          </div>
+          <div class="option-card__body">
+            <div class="option-card__label">Medium Thickness</div>
+            <div class="option-card__desc">Versatile, normal density</div>
+          </div>
+        </div>
+
+        <div class="option-card" onclick="selectAnswer(2, 2, this)">
+          <div class="option-card__icon">
+            <div class="option-card__icon-lines">
+              <div class="option-card__icon-line" style="height:32px"></div>
+              <div class="option-card__icon-line" style="height:44px"></div>
+              <div class="option-card__icon-line" style="height:50px"></div>
+              <div class="option-card__icon-line" style="height:42px"></div>
+              <div class="option-card__icon-line" style="height:34px"></div>
+            </div>
+            <span class="option-card__icon-label">Thick</span>
+          </div>
+          <div class="option-card__body">
+            <div class="option-card__label">Thick & Full</div>
+            <div class="option-card__desc">Naturally dense and strong</div>
+          </div>
+        </div>
+
+        <div class="option-card" onclick="selectAnswer(2, 3, this)">
+          <div class="option-card__icon">
+            <div class="option-card__icon-lines">
+              <div class="option-card__icon-line" style="height:22px; opacity:0.4"></div>
+              <div class="option-card__icon-line" style="height:12px; opacity:0.2"></div>
+              <div class="option-card__icon-line" style="height:26px; opacity:0.35"></div>
+            </div>
+            <span class="option-card__icon-label">Thinning</span>
+          </div>
+          <div class="option-card__body">
+            <div class="option-card__label">Thinning or Hair Loss</div>
+            <div class="option-card__desc">Noticeable reduction in density</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════
+       SCREEN 3: Q3 — Commitment
+       ═══════════════════════════════════ -->
+  <div class="screen" id="screen-q3">
+    <div class="question">
+      <div class="question__nav">
+        <button class="btn-back" onclick="goBack(3)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Back
+        </button>
+        <span class="question__step">Question 3 of 5</span>
+      </div>
+      <h2 class="question__title">How much commitment are you looking for?</h2>
+      <div class="options-grid options-grid--1col">
+
+        <div class="option-card option-card--text" onclick="selectAnswer(3, 0, this)">
+          <div class="option-card__check">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div>
+            <div class="option-card__label">I want something I can put in and take out myself</div>
+          </div>
+        </div>
+
+        <div class="option-card option-card--text" onclick="selectAnswer(3, 1, this)">
+          <div class="option-card__check">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div>
+            <div class="option-card__label">A few weeks at a time is perfect</div>
+          </div>
+        </div>
+
+        <div class="option-card option-card--text" onclick="selectAnswer(3, 2, this)">
+          <div class="option-card__check">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div>
+            <div class="option-card__label">I want extensions I can wear for months</div>
+          </div>
+        </div>
+
+        <div class="option-card option-card--text" onclick="selectAnswer(3, 3, this)">
+          <div class="option-card__check">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div>
+            <div class="option-card__label">I want the longest-lasting option possible</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════
+       SCREEN 4: Q4 — Lifestyle
+       ═══════════════════════════════════ -->
+  <div class="screen" id="screen-q4">
+    <div class="question">
+      <div class="question__nav">
+        <button class="btn-back" onclick="goBack(4)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Back
+        </button>
+        <span class="question__step">Question 4 of 5</span>
+      </div>
+      <h2 class="question__title">What's your lifestyle like?</h2>
+      <div class="options-grid options-grid--1col">
+
+        <div class="option-card option-card--text" onclick="selectAnswer(4, 0, this)">
+          <div class="option-card__check">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div>
+            <div class="option-card__label">Active — gym, swimming, outdoors</div>
+          </div>
+        </div>
+
+        <div class="option-card option-card--text" onclick="selectAnswer(4, 1, this)">
+          <div class="option-card__check">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div>
+            <div class="option-card__label">Busy professional — low maintenance is key</div>
+          </div>
+        </div>
+
+        <div class="option-card option-card--text" onclick="selectAnswer(4, 2, this)">
+          <div class="option-card__check">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div>
+            <div class="option-card__label">Social butterfly — I style my hair often</div>
+          </div>
+        </div>
+
+        <div class="option-card option-card--text" onclick="selectAnswer(4, 3, this)">
+          <div class="option-card__check">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div>
+            <div class="option-card__label">Relaxed — I like to keep things simple</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════
+       SCREEN 5: Q5 — Budget
+       ═══════════════════════════════════ -->
+  <div class="screen" id="screen-q5">
+    <div class="question">
+      <div class="question__nav">
+        <button class="btn-back" onclick="goBack(5)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Back
+        </button>
+        <span class="question__step">Question 5 of 5</span>
+      </div>
+      <h2 class="question__title">What's your budget comfort zone?</h2>
+      <div class="options-grid options-grid--1col">
+
+        <div class="option-card option-card--text" onclick="selectAnswer(5, 0, this)">
+          <div class="option-card__check">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div>
+            <div class="option-card__label">Keep it affordable — best value matters</div>
+          </div>
+        </div>
+
+        <div class="option-card option-card--text" onclick="selectAnswer(5, 1, this)">
+          <div class="option-card__check">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div>
+            <div class="option-card__label">Mid-range — happy to invest for quality</div>
+          </div>
+        </div>
+
+        <div class="option-card option-card--text" onclick="selectAnswer(5, 2, this)">
+          <div class="option-card__check">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div>
+            <div class="option-card__label">Premium — I want the very best, whatever it costs</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════
+       SCREEN 6: ANALYZING
+       ═══════════════════════════════════ -->
+  <div class="screen" id="screen-analyzing">
+    <div class="analyzing">
+      <div class="analyzing__spinner"></div>
+      <p class="analyzing__text">Analysing your answers&hellip;</p>
+      <p class="analyzing__sub">Finding your perfect match</p>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════
+       SCREEN 7: RESULTS
+       ═══════════════════════════════════ -->
+  <div class="screen" id="screen-results">
+    <div class="results">
+      <div class="results__header">
+        <p class="results__eyebrow animate-in">Your Result</p>
+        <h2 class="results__headline animate-in animate-in-delay-1">Your Perfect Match</h2>
+      </div>
+
+      <!-- IMAGE PLACEHOLDER: Primary method result image -->
+      <div class="results__hero-image animate-in animate-in-delay-2" id="resultImage" data-img="result">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+        <span id="resultImageLabel">Method image · 3:4</span>
+      </div>
+
+      <div class="results__body">
+        <h3 class="results__method-name animate-in animate-in-delay-3" id="resultName"></h3>
+        <p class="results__method-desc animate-in animate-in-delay-4" id="resultDesc"></p>
+        <ul class="results__benefits animate-in animate-in-delay-4" id="resultBenefits"></ul>
+        <div class="results__price animate-in animate-in-delay-5" id="resultPrice"></div>
+      </div>
+
+      <!-- Secondary recommendation -->
+      <div class="results__also animate-in animate-in-delay-5" id="alsoConsider">
+        <p class="results__also-label">Also Consider</p>
+        <div class="results__also-content">
+          <div class="results__also-image" data-img="also">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+          </div>
+          <div>
+            <p class="results__also-name" id="alsoName"></p>
+            <p class="results__also-desc" id="alsoDesc"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div class="results__cta animate-in animate-in-delay-5">
+        <a href="https://www.phorest.com/salon/vixenblush/book/service-selection?showSpecialOffers=false" target="_blank" style="text-decoration:none;">
+          <button class="btn-primary">
+            Book Your Free Consultation
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+        </a>
+        <p class="results__cta-sub" id="ctaSub"></p>
+      </div>
+
+      <div class="results__trust">
+        <span>Est. 2011 &nbsp;·&nbsp; Central London &nbsp;·&nbsp; 5★ Rated &nbsp;·&nbsp; Free Consultations</span>
+      </div>
+
+      <div class="results__retake">
+        <button class="btn-retake" onclick="retakeQuiz()">Retake Quiz</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ═══════════════════════════════════════
+// IMAGE CONFIG — Just drop your images
+// into /images/ and set the filenames here.
+// Leave blank to keep the placeholder.
+// ═══════════════════════════════════════
+const IMAGES = {
+  // Welcome screen hero
+  hero:         'images/becky.png',
+
+  // Q1: Hair goals (4 cards)
+  q1_length:    'images/before-and-after-long-blonde-hair-extensions-highlights-lowlights-multi-colour-vixen-and-blush-salon-london-volume-thick-scaled-1-768x768.webp',
+  q1_volume:    'images/vixen-and-blush-892077_6014a5db-ed6d-4468-b947-88a7590a0160.webp',
+  q1_both:      'images/before-after-blonde.png',
+  q1_thinning:  'images/salon-exterior.webp',
+
+  // Q2: Hair type — no images, using SVG icons instead (see HTML)
+
+  // Results screen
+  result:       'images/model-blonde-salon.png',
+  also:         'images/salon-exterior.webp',
+};
+
+// Auto-apply images on load
+document.addEventListener('DOMContentLoaded', () => {
+  Object.entries(IMAGES).forEach(([key, src]) => {
+    if (!src) return;
+    const el = document.querySelector(`[data-img="${key}"]`);
+    if (!el) return;
+    const img = new Image();
+    img.onload = () => {
+      el.style.backgroundImage = `url('${src}')`;
+      el.style.backgroundSize = 'cover';
+      el.style.backgroundPosition = 'center top';
+      el.querySelectorAll('svg, span').forEach(c => c.style.display = 'none');
+    };
+    img.src = src;
+  });
+});
+
+// ═══════════════════════════════════════
+// METHOD DATA
+// ═══════════════════════════════════════
+const methods = {
+  microRing: {
+    name: 'Micro Ring Extensions',
+    desc: 'Our most popular strand-by-strand method. Tiny, discreet rings attach individual extensions to your natural hair — no heat, no glue. Lasts up to 3 months and can be refitted again and again.',
+    benefits: [
+      'Lasts up to 3 months between refits',
+      'No heat or adhesive — gentle on natural hair',
+      'Refittable for long-term value'
+    ],
+    price: 'From £625 (half head, 16")',
+    imageLabel: 'Micro Ring method image'
+  },
+  microBond: {
+    name: 'Micro Bond Extensions',
+    desc: 'The ultimate in longevity. Premium keratin bonds create a seamless, undetectable blend with your natural hair. Our longest-lasting method for those who want to wake up perfect every single day.',
+    benefits: [
+      'Longest-lasting method available — up to 3 months',
+      'Virtually undetectable keratin bonds',
+      'Seamless blend for the most natural finish'
+    ],
+    price: 'Premium — pricing at consultation',
+    imageLabel: 'Micro Bond method image'
+  },
+  tape: {
+    name: 'Tape Extensions',
+    desc: 'Quick, lightweight and beautifully natural. Pre-taped wefts sit flat against the head for instant volume and length. Perfect for those who love the flexibility of a shorter commitment.',
+    benefits: [
+      'Quick application — in and out of the salon faster',
+      'Lightweight and comfortable for everyday wear',
+      'Affordable refits every 6 weeks'
+    ],
+    price: 'From £315 (6 pairs)',
+    imageLabel: 'Tape method image'
+  },
+  clipIn: {
+    name: 'Clip-In Extensions',
+    desc: 'Total freedom, zero commitment. Premium clip-in pieces you apply yourself in minutes. Perfect for special occasions or whenever you want that extra wow factor without any salon time.',
+    benefits: [
+      'Apply and remove yourself in minutes',
+      'Zero commitment — wear them when you want',
+      'No salon appointments needed'
+    ],
+    price: 'From £195',
+    imageLabel: 'Clip-In method image'
+  },
+  featherLight: {
+    name: 'FeatherLight Extensions',
+    desc: 'Specially engineered for finer hair types. FeatherLight uses our gentlest application technique to add beautiful volume and coverage without putting any stress on delicate strands.',
+    benefits: [
+      'Designed specifically for fine and thinning hair',
+      'Ultra-gentle application protects delicate strands',
+      'Natural-looking volume and coverage'
+    ],
+    price: 'Pricing at consultation',
+    imageLabel: 'FeatherLight method image'
+  },
+};
+
+// ═══════════════════════════════════════
+// SCORING MATRIX
+// ═══════════════════════════════════════
+// Each question's options map to score additions for each method
+// [microRing, microBond, tape, clipIn, featherLight]
+
+const scoring = {
+  // Q1: Hair goal (heavy weight)
+  1: [
+    [4, 5, 2, 2, 1],  // Add length
+    [3, 3, 4, 3, 5],  // Add volume
+    [5, 5, 3, 2, 2],  // Both
+    [1, 1, 2, 1, 6],  // Cover thinning
+  ],
+  // Q2: Hair type (heavy weight)
+  2: [
+    [2, 1, 4, 3, 6],  // Fine/thin
+    [5, 5, 4, 4, 3],  // Medium
+    [5, 5, 3, 4, 1],  // Thick
+    [0, 0, 2, 1, 6],  // Thinning/loss
+  ],
+  // Q3: Commitment (direct match)
+  3: [
+    [0, 0, 1, 6, 1],  // Removable → Clip-In
+    [1, 1, 5, 2, 3],  // Few weeks → Tape
+    [5, 4, 1, 0, 2],  // Months → Micro Ring
+    [3, 6, 0, 0, 1],  // Longest → Micro Bond
+  ],
+  // Q4: Lifestyle (tiebreaker)
+  4: [
+    [2, 3, 2, 3, 2],  // Active
+    [3, 4, 3, 2, 3],  // Busy professional
+    [3, 3, 2, 3, 2],  // Social butterfly
+    [3, 3, 3, 3, 3],  // Relaxed
+  ],
+  // Q5: Budget (tiebreaker)
+  5: [
+    [2, 0, 4, 4, 1],  // Affordable
+    [4, 3, 3, 2, 3],  // Mid-range
+    [3, 5, 2, 1, 3],  // Premium
+  ]
+};
+
+// ═══════════════════════════════════════
+// QUIZ STATE
+// ═══════════════════════════════════════
+let currentScreen = 'welcome';
+let answers = {};
+
+function showScreen(screenId) {
+  const current = document.querySelector('.screen.active');
+  const next = document.getElementById('screen-' + screenId);
+
+  if (current) {
+    current.classList.add('exiting');
+    current.classList.remove('active');
+    setTimeout(() => current.classList.remove('exiting'), 600);
+  }
+
+  setTimeout(() => {
+    next.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, 150);
+
+  currentScreen = screenId;
+  updateProgress();
+}
+
+function updateProgress() {
+  const bar = document.getElementById('progressBar');
+  const fill = document.getElementById('progressFill');
+  const screenMap = { welcome: 0, q1: 1, q2: 2, q3: 3, q4: 4, q5: 5, analyzing: 5, results: 5 };
+  const progress = (screenMap[currentScreen] || 0) / 5 * 100;
+
+  if (currentScreen === 'welcome' || currentScreen === 'results') {
+    bar.classList.remove('visible');
+  } else {
+    bar.classList.add('visible');
+  }
+  fill.style.width = progress + '%';
+}
+
+function startQuiz() {
+  answers = {};
+  showScreen('q1');
+}
+
+function selectAnswer(question, optionIndex, element) {
+  // Store answer
+  answers[question] = optionIndex;
+
+  // Visual feedback
+  const parent = element.closest('.options-grid');
+  parent.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+  element.classList.add('selected');
+
+  // Auto-advance after brief pause
+  setTimeout(() => {
+    if (question < 5) {
+      showScreen('q' + (question + 1));
+    } else {
+      showScreen('analyzing');
+      setTimeout(() => {
+        calculateResults();
+        showScreen('results');
+      }, 2000);
+    }
+  }, 400);
+}
+
+function goBack(fromQuestion) {
+  if (fromQuestion === 1) {
+    showScreen('welcome');
+  } else {
+    showScreen('q' + (fromQuestion - 1));
+  }
+}
+
+function calculateResults() {
+  const methodKeys = ['microRing', 'microBond', 'tape', 'clipIn', 'featherLight'];
+  const scores = [0, 0, 0, 0, 0, 0];
+
+  for (let q = 1; q <= 5; q++) {
+    if (answers[q] !== undefined && scoring[q][answers[q]]) {
+      const addition = scoring[q][answers[q]];
+      for (let i = 0; i < 6; i++) {
+        scores[i] += addition[i];
+      }
+    }
+  }
+
+  // Find top 2
+  const indexed = scores.map((score, i) => ({ score, index: i, key: methodKeys[i] }));
+  indexed.sort((a, b) => b.score - a.score);
+
+  const primary = methods[indexed[0].key];
+  const secondary = methods[indexed[1].key];
+
+  // Populate results
+  document.getElementById('resultName').textContent = primary.name;
+  document.getElementById('resultDesc').textContent = primary.desc;
+  document.getElementById('resultImageLabel').textContent = primary.imageLabel;
+  document.getElementById('resultPrice').textContent = primary.price;
+
+  const benefitsList = document.getElementById('resultBenefits');
+  benefitsList.innerHTML = '';
+  primary.benefits.forEach(b => {
+    const li = document.createElement('li');
+    li.textContent = b;
+    benefitsList.appendChild(li);
+  });
+
+  document.getElementById('alsoName').textContent = secondary.name;
+  document.getElementById('alsoDesc').textContent = secondary.desc;
+  document.getElementById('ctaSub').textContent =
+    'Speak with a specialist about ' + primary.name + ' and your hair goals';
+}
+
+function retakeQuiz() {
+  // Clear selections visually
+  document.querySelectorAll('.option-card.selected').forEach(c => c.classList.remove('selected'));
+  answers = {};
+  showScreen('welcome');
+}
+
+// Initial state
+updateProgress();
+</script>
+
+</body>
+</html>
